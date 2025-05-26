@@ -21,6 +21,8 @@
  * 
  * 20 May 25  0.1  001 - Initial version - MT
  * 25 May 25  0.2  002 - Creates binary tree using strings - MT
+ *            0.3  003 - Allocates storage for each string and saves a copy
+ *                       of the data with each leaf - MT
  *
  */
 
@@ -41,7 +43,8 @@ leaf *h_new(char *s_data) /* Create a new leaf */
 {
    leaf *h_leaf;
    h_leaf = (leaf*)malloc(sizeof(*h_leaf));
-   h_leaf->data = s_data; /* Saves pointer to string in leaf */
+   h_leaf->data = malloc(strlen(s_data)); /* Allocates storage for string */
+   memcpy(h_leaf->data, s_data, strlen(s_data)); /* and copies it to leaf */ 
    h_leaf->left = NULL;
    h_leaf->right = NULL;
    return h_leaf;
