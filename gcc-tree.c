@@ -25,6 +25,7 @@
  *                       of the data with each leaf - MT
  *            0.4  004 - Uses  helper functions to allow binary trees to be 
  *                       created using different data types - MT
+ *                 005 - Modified to use exit() - MT
  *
  */
 
@@ -148,5 +149,5 @@ int main()
    v_inorder(h_root, v_prtnum);
    printf("\n");
    
-   return 0;
+   exit(EXIT_SUCCESS);
 }
