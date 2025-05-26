@@ -1,4 +1,4 @@
-#gcc-tree
+# gcc-tree
 
 ## Binary tree example in C 
 
