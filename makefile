@@ -22,21 +22,24 @@
 #  29 Sep 23         - Moved  library definitions to after the object  file
 #                      name when linking - MT
 #                    - Only display the filename if linking succeded - MT 
+#  11 Nov 24   0.2   - Project name derived from current folder - MT
 #
-PROJECT	=  gcc-tree
 
-SOURCE	=  $(wildcard *.c) 	# Compile all source files 
-INCLUDE	=  $(wildcard *.h) 	# Automatically get all include files 
+PROJECT	= $(strip $(notdir $(abspath $(CURDIR)/.)))
+
+SOURCE	=  $(wildcard *.c) 	# Compile all source files
+INCLUDE	=  $(wildcard *.h) 	# Automatically get all include files
 BACKUP	=  $(wildcard *.c.[0-9])
 OBJECT	=  $(SOURCE:.c=.o)
 PROGRAM	=  $(SOURCE:.c=)
-FILES	=  $(SOURCE) $(BACKUP) $(INCLUDE) LICENSE README.md makefile .gitignore .gitattributes
+
+FILES	=  $(SOURCE) $(BACKUP) $(INCLUDE) # LICENSE README.md makefile .gitignore .gitattributes
 LANG	=  LANG_$(shell (echo $$LANG | cut -f 1 -d '_'))
 UNAME	=  $(shell uname)
 
-LIBS	=	
+LIBS	=  -lm
 FLAGS	=  -fcommon -Wall -pedantic -std=gnu99
-FLAGS	+= -Wno-comment -Wno-deprecated-declarations -Wno-builtin-macro-redefined
+FLAGS	+= -Wno-comment -Wno-unused-function #-Wno-deprecated-declarations -Wno-builtin-macro-redefined
 FLAGS	+= -D $(LANG)
 
 # Operating system specific settings
@@ -47,8 +50,8 @@ endif
 
 # Compiler specific settings
 ifeq ($(CC), cc)
-LIBS	+=  -no-pie
-#FLAGS	+=  -ansi
+#LIBS	+=  
+FLAGS	+=  -no-pie
 endif
 
 ifdef DEBUG
@@ -60,18 +63,23 @@ make:$(PROGRAM) $(OBJECT)
 all:clean $(PROGRAM) $(OBJECT)
 
 # Compile sources
-%.o : %.c 
+%.o : %.c
+ifdef DEBUG
+	@echo $(CC) $(FLAGS) -c $<
+endif
 	@$(CC) $(FLAGS) -c $<
 
 # Link object file and display execuitable file to indecate progress
-# and validate that it was created.
-%: %.o 
-	@rm -f $@ || true
-	@$(CC) $(FLAGS) -o $@ $< $(LIBS) && ls --color $@  
+# and validate that it was created
+%: %.o
+ifdef DEBUG
+	@echo $(CC) $(FLAGS) -o $@ $<  $(LIBS)
+endif
+	@$(CC) $(FLAGS) -o $@ $< $(LIBS) && ls --color $@
 
 clean:
 	@rm -f $(OBJECT) # -v
 	@rm -f $(PROGRAM) # -v
-	
+
 backup: clean
-	@echo "$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; tar -czpf ..\/$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz $(FILES)	
+	@echo "$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; tar -czpf ..\/$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz $(FILES)
