@@ -116,9 +116,9 @@ int main()
    int i_size;
    size_t t_size;
    
-   int i_array[] = { 5, 1, 3, 8, 4, 9, 6, 2, 7, 0 };
-   float f_array[] = { 1.61803, 1.73205, 3.14159, 2.71828, 1.41421 };
-   char *s_array[] = { "William", "Michael", "Lisa", "John", "Mary",
+   const int i_array[] = { 5, 1, 3, 8, 4, 9, 6, 2, 7, 0 };
+   const float f_array[] = { 1.61803, 1.73205, 3.14159, 2.71828, 1.41421 };
+   const char *s_array[] = { "William", "Michael", "Lisa", "John", "Mary",
                         "David", "James", "Karen", "Robert", "Linda",
                         "Mark",  "Patricia", "Deborah", "Richard",
                         "Elizabeth" };   
@@ -136,7 +136,7 @@ int main()
    h_root = NULL;
    i_size = sizeof(s_array) / sizeof(s_array[0]);
    for (int i_count = 0; i_count < i_size; ++i_count)
-      h_root = h_add(h_root, s_array[i_count], strlen(s_array[i_count]), i_cmpstr);
+      h_root = h_add(h_root, s_array[i_count], strlen(s_array[i_count]) + 1, i_cmpstr);  /* strlen() does not include terminating NUL */
    v_inorder(h_root, v_prtstr);
    printf("\n");
 
@@ -149,5 +149,5 @@ int main()
    v_inorder(h_root, v_prtnum);
    printf("\n");
    
-   exit(EXIT_SUCCESS);
+   return 0;
 }
